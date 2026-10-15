@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Compras | CompraFácil{% endblock %}
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3"><div><h1 class="h2 mb-1">Compras</h1><p class="text-secondary mb-0">Consulta y administra las compras realizadas.</p></div><a class="btn btn-primary" href="{% url 'compra_crear' %}">+ Registrar compra</a></div>
+<div class="card p-3 mb-3"><form method="get" class="row g-2 align-items-end">
+<div class="col-md-5"><label class="form-label">Proveedor</label><select class="form-select" name="proveedor"><option value="">Todos los proveedores</option>{% for p in proveedores %}<option value="{{ p.pk }}" {% if proveedor_seleccionado == p.pk|stringformat:"s" %}selected{% endif %}>{{ p.razon_social }}</option>{% endfor %}</select></div>
+<div class="col-md-4"><label class="form-label">Estado</label><select class="form-select" name="estado"><option value="">Todos los estados</option>{% for key,label in estados %}<option value="{{ key }}" {% if estado_seleccionado == key %}selected{% endif %}>{{ label }}</option>{% endfor %}</select></div>
+<div class="col-md-3 d-grid"><button class="btn btn-outline-primary">Aplicar filtros</button></div></form></div>
+<div class="card p-3"><div class="table-responsive"><table class="table table-hover align-middle"><thead><tr><th>Número</th><th>Proveedor</th><th>Fecha</th><th>Valor total</th><th>Estado</th><th>Acciones</th></tr></thead><tbody>
+{% for c in compras %}<tr><td>{{ c.numero_compra }}</td><td>{{ c.proveedor.razon_social }}</td><td>{{ c.fecha_compra|date:"d/m/Y" }}</td><td>${{ c.valor_total|floatformat:2 }}</td><td>{{ c.get_estado_display }}</td><td class="text-nowrap"><a class="btn btn-sm btn-outline-secondary" href="{% url 'compra_detalle' c.pk %}">Ver</a> <a class="btn btn-sm btn-outline-primary" href="{% url 'compra_editar' c.pk %}">Editar</a> <a class="btn btn-sm btn-outline-danger" href="{% url 'compra_eliminar' c.pk %}">Eliminar</a></td></tr>
+{% empty %}<tr><td colspan="6" class="text-center text-secondary py-4">No hay compras que coincidan con los filtros.</td></tr>{% endfor %}
+</tbody></table></div></div>
+{% endblock %}

@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Proveedores | CompraFácil{% endblock %}
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3"><div><h1 class="h2 mb-1">Proveedores</h1><p class="text-secondary mb-0">Registro y administración de proveedores.</p></div><a class="btn btn-primary" href="{% url 'proveedor_crear' %}">+ Registrar proveedor</a></div>
+<div class="card p-3 mb-3"><form method="get" class="row g-2"><div class="col-sm-9"><input class="form-control" name="q" value="{{ q }}" placeholder="Buscar por razón social o NIT"></div><div class="col-sm-3 d-grid"><button class="btn btn-outline-primary">Buscar</button></div></form></div>
+<div class="card p-3"><div class="table-responsive"><table class="table table-hover align-middle"><thead><tr><th>Razón social</th><th>NIT</th><th>Contacto</th><th>Teléfono</th><th>Acciones</th></tr></thead><tbody>
+{% for p in proveedores %}<tr><td>{{ p.razon_social }}</td><td>{{ p.nit }}</td><td>{{ p.nombre_contacto }}</td><td>{{ p.telefono }}</td><td class="text-nowrap"><a class="btn btn-sm btn-outline-secondary" href="{% url 'proveedor_detalle' p.pk %}">Ver</a> <a class="btn btn-sm btn-outline-primary" href="{% url 'proveedor_editar' p.pk %}">Editar</a> <a class="btn btn-sm btn-outline-danger" href="{% url 'proveedor_eliminar' p.pk %}">Eliminar</a></td></tr>
+{% empty %}<tr><td colspan="5" class="text-center text-secondary py-4">No hay proveedores para mostrar.</td></tr>{% endfor %}
+</tbody></table></div></div>
+{% endblock %}

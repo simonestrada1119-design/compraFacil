@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}{{ titulo }} | CompraFácil{% endblock %}
+{% block content %}
+<div class="row justify-content-center"><div class="col-lg-8"><div class="card p-4">
+<h1 class="h2 mb-1">{{ titulo }}</h1><p class="required-note mb-4">Los campos marcados son obligatorios. Revisa los mensajes junto a cada campo.</p>
+<form method="post" novalidate id="formulario-principal">{% csrf_token %}
+{% if form.non_field_errors %}<div class="alert alert-danger">{{ form.non_field_errors }}</div>{% endif %}
+{% for field in form %}
+<div class="mb-3">
+<label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}{% if field.field.required %} *{% endif %}</label>
+{{ field }}
+{% if field.help_text %}<div class="form-text">{{ field.help_text }}</div>{% endif %}
+{% for error in field.errors %}<div class="invalid-feedback">{{ error }}</div>{% endfor %}
+<div class="invalid-feedback js-error" aria-live="polite"></div>
+</div>
+{% endfor %}
+<div class="d-flex gap-2"><button class="btn btn-primary" type="submit">Guardar</button><a class="btn btn-outline-secondary" href="{% url volver %}">Cancelar</a></div>
+</form></div></div></div>
+{% endblock %}
+{% block scripts %}
+<script>
+(() => {
+ const form = document.getElementById('formulario-principal');
+ if (!form) return;
+ const showError = (field, message) => {
+   const container = field.closest('.mb-3');
+   const error = container?.querySelector('.js-error');
+   if (error) error.textContent = message;
+   field.classList.toggle('is-invalid', Boolean(message));
+ };
+ form.querySelectorAll('input,select,textarea').forEach(field => {
+   field.addEventListener('input', () => showError(field, ''));
+   field.addEventListener('change', () => showError(field, ''));
+ });
+ form.addEventListener('submit', event => {
+   let firstInvalid = null;
+   form.querySelectorAll('input,select,textarea').forEach(field => {
+     let message = '';
+     if (field.required && !field.value.trim()) message = 'Este campo es obligatorio.';
+     else if (field.name === 'nit' && field.value && !/^\\d{6,15}(-\\d)?$/.test(field.value.trim())) message = 'Ingresa entre 6 y 15 dígitos y guion opcional con dígito de verificación.';
+     else if (field.name === 'telefono' && field.value && !/^[0-9+\\-\\s()]{7,20}$/.test(field.value.trim())) message = 'Usa solo números, espacios, paréntesis, + o guion (7 a 20 caracteres).';
+     else if (field.type === 'email' && field.value && !field.validity.valid) message = 'Escribe un correo electrónico válido.';
+     else if (field.name === 'valor_total' && field.value && Number(field.value) <= 0) message = 'El valor debe ser mayor que cero.';
+     else if (field.name === 'fecha_compra' && field.value && field.value > new Date().toLocaleDateString('en-CA')) message = 'La fecha no puede ser futura.';
+     showError(field, message);
+     if (message && !firstInvalid) firstInvalid = field;
+   });
+   if (firstInvalid) {
+     event.preventDefault();
+     firstInvalid.focus();
+   }
+ });
+})();
+</script>
+{% endblock %}
