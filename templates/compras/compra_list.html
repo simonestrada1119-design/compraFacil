@@ -1,0 +1,72 @@
+{% extends 'compras/base.html' %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Lista de Compras</h2>
+    <a href="{% url 'compra_create' %}" class="btn btn-primary">+ Nueva Compra</a>
+</div>
+
+<form method="get" class="row g-3 mb-4">
+    <div class="col-md-4">
+        <select name="proveedor" class="form-select">
+            <option value="">-- Todos los proveedores --</option>
+            {% for p in proveedores %}
+                <option value="{{ p.id }}" {% if proveedor_seleccionado == p.id|stringformat:"s" %}selected{% endif %}>{{ p.razon_social }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-md-3">
+        <select name="estado" class="form-select">
+            <option value="">-- Todos los estados --</option>
+            <option value="registrada" {% if estado_seleccionado == 'registrada' %}selected{% endif %}>Registrada</option>
+            <option value="recibida" {% if estado_seleccionado == 'recibida' %}selected{% endif %}>Recibida</option>
+            <option value="cancelada" {% if estado_seleccionado == 'cancelada' %}selected{% endif %}>Cancelada</option>
+        </select>
+    </div>
+    <div class="col-md-3">
+        <button type="submit" class="btn btn-secondary">Filtrar</button>
+        <a href="{% url 'compra_list' %}" class="btn btn-outline-danger">Limpiar</a>
+    </div>
+</form>
+
+<div class="card shadow">
+    <div class="card-body">
+        <table class="table table-striped align-middle">
+            <thead>
+                <tr>
+                    <th>N° Compra</th>
+                    <th>Proveedor</th>
+                    <th>Fecha</th>
+                    <th>Valor Total</th>
+                    <th>Estado</th>
+                    <th>Usuario</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for c in compras %}
+                <tr>
+                    <td>{{ c.numero_compra }}</td>
+                    <td>{{ c.proveedor.razon_social }}</td>
+                    <td>{{ c.fecha_compra }}</td>
+                    <td>${{ c.valor_total }}</td>
+                    <td>
+                        <span class="badge {% if c.estado == 'recibida' %}bg-success{% elif c.estado == 'cancelada' %}bg-danger{% else %}bg-secondary{% endif %}">
+                            {{ c.get_estado_display }}
+                        </span>
+                    </td>
+                    <td>{{ c.usuario.username }}</td>
+                    <td>
+                        <a href="{% url 'compra_update' c.id %}" class="btn btn-sm btn-warning">Editar</a>
+                        <a href="{% url 'compra_delete' c.id %}" class="btn btn-sm btn-danger" onclick="return confirm('¿Estás seguro de eliminar esta compra?');">Eliminar</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" class="text-center text-muted">No hay compras registradas.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

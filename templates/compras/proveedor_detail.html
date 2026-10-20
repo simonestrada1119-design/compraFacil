@@ -1,0 +1,33 @@
+{% extends 'compras/base.html' %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow">
+            <div class="card-body p-4">
+                <h3>Detalle del Proveedor</h3>
+                <hr>
+                <p><strong>Razón Social:</strong> {{ proveedor.razon_social }}</p>
+                <p><strong>NIT:</strong> {{ proveedor.nit }}</p>
+                <p><strong>Contacto:</strong> {{ proveedor.nombre_contacto }}</p>
+                <p><strong>Teléfono:</strong> {{ proveedor.telefono }}</p>
+                <p><strong>Correo:</strong> {{ proveedor.correo }}</p>
+                <p><strong>Dirección:</strong> {{ proveedor.direccion }}</p>
+                
+                <h5 class="mt-4">Compras de este Proveedor</h5>
+                <ul class="list-group mb-3">
+                    {% for c in compras_proveedor %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Compra #{{ c.numero_compra }} - ${{ c.valor_total }}
+                            <a href="{% url 'compra_detail' c.id %}" class="btn btn-sm btn-outline-primary">Ver</a>
+                        </li>
+                    {% empty %}
+                        <li class="list-group-item text-muted">No tiene compras asociadas.</li>
+                    {% endfor %}
+                </ul>
+
+                <a href="{% url 'proveedor_list' %}" class="btn btn-secondary">Volver al listado</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

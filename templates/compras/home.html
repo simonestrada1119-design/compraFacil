@@ -1,0 +1,30 @@
+{% extends 'compras/base.html' %}
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-12">
+        <h2>Panel de Control</h2>
+        <p class="text-muted">Sistema de gestión de compras y proveedores.</p>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card text-white bg-primary shadow">
+            <div class="card-body">
+                <h5 class="card-title">Proveedores</h5>
+                <p class="card-text fs-3">{{ total_proveedores }}</p>
+                <a href="{% url 'proveedor_list' %}" class="text-white text-decoration-none">Gestionar Proveedores &rarr;</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card text-white bg-success shadow">
+            <div class="card-body">
+                <h5 class="card-title">Compras</h5>
+                <p class="card-text fs-3">{{ total_compras }}</p>
+                <a href="{% url 'compra_list' %}" class="text-white text-decoration-none">Gestionar Compras &rarr;</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

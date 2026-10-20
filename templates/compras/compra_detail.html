@@ -1,0 +1,26 @@
+{% extends 'compras/base.html' %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow">
+            <div class="card-body p-4">
+                <h3>Detalle de la Compra #{{ compra.numero_compra }}</h3>
+                <hr>
+                <p><strong>Proveedor:</strong> {{ compra.proveedor.razon_social }} (NIT: {{ compra.proveedor.nit }})</p>
+                <p><strong>Fecha de Compra:</strong> {{ compra.fecha_compra }}</p>
+                <p><strong>Descripción:</strong> {{ compra.descripcion }}</p>
+                <p><strong>Valor Total:</strong> ${{ compra.valor_total }}</p>
+                <p><strong>Estado:</strong> 
+                    <span class="badge {% if compra.estado == 'recibida' %}bg-success{% elif compra.estado == 'cancelada' %}bg-danger{% else %}bg-secondary{% endif %}">
+                        {{ compra.get_estado_display }}
+                    </span>
+                </p>
+                <p><strong>Registrado por:</strong> {{ compra.usuario.username }}</p>
+                <p><strong>Fecha de Registro:</strong> {{ compra.fecha_registro }}</p>
+
+                <a href="{% url 'compra_list' %}" class="btn btn-secondary mt-3">Volver al listado</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
